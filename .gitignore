@@ -27,3 +27,6 @@ __pycache__/
 # Temp
 *.tmp
 *.temp
+
+# Website (отдельно)
+website/
