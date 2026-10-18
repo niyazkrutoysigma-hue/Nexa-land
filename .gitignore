@@ -1,0 +1,29 @@
+﻿# Build artifacts
+bin/
+obj/
+*.user
+*.suo
+.vs/
+dist/
+tools/work_out/
+tools/obfuscar_zip/
+*.nupkg
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.log
+
+# Temp
+*.tmp
+*.temp

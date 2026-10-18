@@ -1,0 +1,165 @@
+﻿<UserControl x:Class="MinecraftLauncher.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:MinecraftLauncher.Converters"
+             xmlns:vm="clr-namespace:MinecraftLauncher.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:HomeViewModel}">
+
+    <UserControl.Resources>
+        <conv:FileImageConverter x:Key="FileImage" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ============ Hero ============ -->
+        <Border Grid.Row="0" Style="{StaticResource Card}" Padding="22">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Greeting}" Style="{StaticResource Caption}" />
+                    <TextBlock Text="{Binding LastPlayedTitle}" Style="{StaticResource H1}" Margin="0,4,0,0" />
+                    <TextBlock Text="{Binding LastPlayedMeta}" Style="{StaticResource Body}" Margin="0,4,0,0" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                        <Button Content="▶  Играть" Style="{StaticResource AccentButton}" Padding="20,10"
+                                Command="{Binding PlayLastCommand}" />
+                        <Button Content="Моды сборки" Style="{StaticResource OutlineButton}" Margin="10,0,0,0"
+                                Padding="16,10" Command="{Binding ModsCommand}"
+                                Visibility="{Binding HasLastPlayed, Converter={StaticResource BoolToVis}}" />
+                        <Button Content="Каталог версий" Style="{StaticResource GhostButton}" Margin="6,0,0,0"
+                                Command="{Binding StoreCommand}" />
+                        <Button Content="Новая сборка" Style="{StaticResource GhostButton}"
+                                Command="{Binding CreateCommand}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Ромбик-декор -->
+                <Grid Grid.Column="1" Width="120" Height="120" Margin="20,0,0,0" VerticalAlignment="Center">
+                    <Ellipse Fill="{DynamicResource Accent.Soft}" />
+                    <Path Stretch="Uniform" Margin="26" Stroke="{DynamicResource Accent.Base}" StrokeThickness="1.6"
+                          StrokeLineJoin="Round" Opacity="0.9"
+                          Data="M12,1 L23,12 L12,23 L1,12 Z M12,5.5 L18.5,12 L12,18.5 L5.5,12 Z M12,9 L15,12 L12,15 L9,12 Z" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- ============ Статистика ============ -->
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,14,0,0">
+            <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,7,0">
+                <StackPanel>
+                    <TextBlock Text="СБОРОК" Style="{StaticResource Caption}" />
+                    <TextBlock Text="{Binding InstancesCount}" FontSize="26" FontFamily="Segoe UI Black"
+                               Foreground="{DynamicResource Fg.Primary}" Margin="0,2,0,0" />
+                    <TextBlock Text="установлено и готово к запуску" Style="{StaticResource Caption}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="16" Margin="7,0">
+                <StackPanel>
+                    <TextBlock Text="МОДОВ" Style="{StaticResource Caption}" />
+                    <TextBlock Text="{Binding ModsCount}" FontSize="26" FontFamily="Segoe UI Black"
+                               Foreground="{DynamicResource Accent.Base}" Margin="0,2,0,0" />
+                    <TextBlock Text="в недавних сборках" Style="{StaticResource Caption}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="16" Margin="7,0">
+                <StackPanel>
+                    <TextBlock Text="АККАУНТ" Style="{StaticResource Caption}" />
+                    <TextBlock Text="{Binding AccountText}" FontSize="14" FontFamily="Segoe UI Semibold"
+                               Foreground="{DynamicResource Fg.Primary}" Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding AccountHint}" Style="{StaticResource Caption}" Margin="0,3,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="16" Margin="7,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="СИСТЕМА" Style="{StaticResource Caption}" />
+                    <TextBlock Text="{Binding JavaText}" FontSize="13" FontFamily="Segoe UI Semibold"
+                               Foreground="{DynamicResource Fg.Primary}" Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding SharedSizeText}" Style="{StaticResource Caption}" Margin="0,3,0,0" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- ============ Недавние сборки ============ -->
+        <Border Grid.Row="2" Style="{StaticResource Card}" Padding="18" Margin="0,14,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,12">
+                    <TextBlock Text="Недавние сборки" Style="{StaticResource H2}" HorizontalAlignment="Left" />
+                    <Button Content="Все сборки" Style="{StaticResource GhostButton}"
+                            HorizontalAlignment="Right" Command="{Binding CreateCommand}" />
+                </Grid>
+
+                <ListBox Grid.Row="1" ItemsSource="{Binding Recent}" Style="{StaticResource AppListBox}"
+                         ItemContainerStyle="{StaticResource AppListBoxItem}" Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource Bg.Elev2}" CornerRadius="10" Padding="12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Column="0" Width="40" Height="40" Margin="0,0,12,0">
+                                        <Border CornerRadius="9" Background="{DynamicResource Bg.Elev1}" />
+                                        <TextBlock Text="{Binding Name, StringFormat={}{0[0]}}"
+                                                   FontFamily="Segoe UI Black" FontSize="16"
+                                                   Foreground="{DynamicResource Fg.Muted}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <Image Source="{Binding IconFile, Converter={StaticResource FileImage}}"
+                                               Width="40" Height="40" Stretch="UniformToFill" />
+                                    </Grid>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="13.5"
+                                                   FontFamily="Segoe UI Semibold" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                            <TextBlock Text="{Binding DisplayVersion}" Style="{StaticResource Caption}" />
+                                            <TextBlock Text=" · " Style="{StaticResource Caption}" />
+                                            <TextBlock Text="{Binding EnabledModsCount, StringFormat={}{0} модов}"
+                                                       Style="{StaticResource Caption}" />
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Content="Моды" Style="{StaticResource GhostButton}"
+                                                Tag="{Binding}" Click="OnModsClick" />
+                                        <Button Content="Играть" Style="{StaticResource AccentButton}" MinWidth="84"
+                                                Tag="{Binding}" Click="OnPlayClick" Margin="6,0,0,0" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock Grid.Row="1" Text="Сборок пока нет — откройте «Каталог версий» и установите любую версию Minecraft"
+                           Style="{StaticResource Body}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                           TextAlignment="Center" MaxWidth="520"
+                           Visibility="{Binding Recent.Count, Converter={StaticResource CountToVis}}" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
